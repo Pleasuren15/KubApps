@@ -1,3 +1,3 @@
 <Solution>
-  <Project Path="src/kubapp.api/kubapp.api.csproj" />
+  <Project Path="src/kubapp.api/kubapps.api.csproj" />
 </Solution>

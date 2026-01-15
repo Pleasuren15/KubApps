@@ -1,28 +1,19 @@
-using kubapp.api.Extensions;
-using kubapp.api.Services;
-using kubapp.api.Services.Interfaces;
+using kubapps.api.Extensions;
+using kubapps.api.Services.Interfaces;
+using Scalar.AspNetCore;
 
-namespace kubapp.api
+namespace kubapps.api
 {
     public class Program
     {
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
-            builder.Services.AddAuthorization();
-            builder.Services.AddOpenApi();
-            builder.Services.AddLogging();
-            builder.Services.AddSingleton<IContextService, ContextService>();
+            builder.Services.AddServices();
 
             var app = builder.Build();
-            if (app.Environment.IsDevelopment())
-            {
-                app.MapOpenApi();
-            }
-
-            app.UseHttpsRedirection();
-            app.UseAuthorization();
+            app.AddWebApplication();
+            
 
             app.MapGet("/getAllCluster", (IContextService contextService) =>
             {

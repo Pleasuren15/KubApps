@@ -1,6 +1,6 @@
 ﻿using k8s.KubeConfigModels;
 
-namespace kubapp.api.Services.Interfaces;
+namespace kubapps.api.Services.Interfaces;
 
 public interface IContextService
 {

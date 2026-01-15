@@ -1,8 +1,8 @@
 ﻿using k8s;
 using k8s.KubeConfigModels;
-using kubapp.api.Services.Interfaces;
+using kubapps.api.Services.Interfaces;
 
-namespace kubapp.api.Services;
+namespace kubapps.api.Services;
 
 public class ContextService(ILogger<ContextService> logger) : IContextService
 {
