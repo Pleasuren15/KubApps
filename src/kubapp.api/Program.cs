@@ -1,4 +1,6 @@
 using kubapp.api.Extensions;
+using kubapp.api.Services;
+using kubapp.api.Services.Interfaces;
 
 namespace kubapp.api
 {
@@ -11,7 +13,7 @@ namespace kubapp.api
             builder.Services.AddAuthorization();
             builder.Services.AddOpenApi();
             builder.Services.AddLogging();
-            builder.Services.AddKubernetesClient();
+            builder.Services.AddSingleton<IContextService, ContextService>();
 
             var app = builder.Build();
             if (app.Environment.IsDevelopment())
@@ -22,11 +24,12 @@ namespace kubapp.api
             app.UseHttpsRedirection();
             app.UseAuthorization();
 
-            app.MapGet("/weatherforecast", (HttpContext httpContext) =>
+            app.MapGet("/getAllCluster", (IContextService contextService) =>
             {
-                
+                var results = contextService.GetClustersAsync();
+                return results;
             })
-            .WithName("GetWeatherForecast");
+            .WithName("GetAllClusters");
 
             app.Run();
         }
