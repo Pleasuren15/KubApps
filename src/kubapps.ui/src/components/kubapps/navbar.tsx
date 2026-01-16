@@ -1,13 +1,8 @@
 import * as React from "react";
-import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectLabel,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue, } from "@/components/ui/select";
+import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger, } from "@/components/ui/sheet"
+import { Button } from "@/components/ui/button"
+import { Separator } from "@/components/ui/separator"
 
 const clusters = [
     {
@@ -39,7 +34,7 @@ function NavBar() {
                             <div>
                                 <Select>
                                     <SelectTrigger className="w-[350px]">
-                                        <SelectValue placeholder="Select A Cluster" />
+                                        <SelectValue placeholder="Select Your K8s Cluster" />
                                     </SelectTrigger>
                                     <SelectContent>
                                         {clusters.map((subscription) => (
@@ -56,7 +51,34 @@ function NavBar() {
                                 </Select>
                             </div>
                             <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                                asdlkonahodi
+                                <Sheet>
+                                    <SheetTrigger asChild>
+                                        <Button variant="outline" size="icon" className="rounded-full">
+                                            <img width="20" height="20" src="https://img.icons8.com/office/40/information.png" alt="information" />
+                                        </Button>
+                                    </SheetTrigger>
+                                    <SheetContent>
+                                        <SheetHeader>
+                                            <SheetTitle>About</SheetTitle>
+                                            <Separator />
+                                            <SheetDescription>
+                                                KubApps was developed by <strong>Pleasuren15</strong> as a personal project with the goal of continuously
+                                                improving and refining development skills, particularly in the area of building modern,
+                                                scalable web applications using contemporary frameworks, tools, and libraries.
+                                                <br /><br />
+                                                The project serves as both a learning platform and a practical solution, focusing on
+                                                the management of Kubernetes clusters and the applications deployed within them. KubApps
+                                                aims to simplify cluster administration, provide better visibility into deployed workloads,
+                                                and offer a more streamlined way to interact with Kubernetes environments through a web-based interface.
+                                            </SheetDescription>
+                                        </SheetHeader>
+                                        <SheetFooter>
+                                            <SheetClose asChild>
+                                                <Button variant="destructive">Close</Button>
+                                            </SheetClose>
+                                        </SheetFooter>
+                                    </SheetContent>
+                                </Sheet>
                             </div>
                         </div>
                     </div>

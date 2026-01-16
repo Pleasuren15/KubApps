@@ -3,7 +3,7 @@ import { NavBar } from "./components/kubapps/navbar"
 function App() {
   return (
     <div className="">
-      <NavBar></NavBar>
+      <NavBar />
     </div>
   )
 }
