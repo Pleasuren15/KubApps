@@ -1,30 +1,41 @@
-import * as React from "react";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue, } from "@/components/ui/select";
 import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger, } from "@/components/ui/sheet"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
+import axios from "axios";
+import { useState } from 'react';
 
-const clusters = [
-    {
-        subscription: "sub-prod-platform",
-        clusters: [
-            "aks-prod-euw-0",
-            "aks-nonprod-weu-01",
-            "aks-prod-southafricanorth-01",
-        ],
+const api = axios.create({
+    baseURL: "https://localhost:7291/",
+    headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
     },
-    {
-        subscription: "sub-payments-nonprod",
-        clusters: [
-            "aks-platform-prod",
-            "aks-observability-prod",
-            "aks-shared-services",
-            "aks-payments-prod",
-        ],
-    },
-];
+});
 
 function NavBar() {
+    const [clusters, setCluster] = useState([{ subscription: '', clusters: [] }]);
+
+    const fetchClusters = async () => {
+        try {
+            await api.get("/getAllCluster")
+                .then(res => {
+                    const stagingClusters = res.data.filter((c: any) => c.name.includes('sta'));
+                    const prClusters = res.data.filter((c: any) => c.name.includes('prod'));
+                    const otherClusters = res.data.filter((c: any) => !c.name.includes('sta') && !c.name.includes('prod'));
+                    const all = [{ subscription: 'staging', clusters: stagingClusters.map((c: any) => c.name) },
+                        { subscription: 'production', clusters: prClusters.map((c: any) => c.name) },
+                        { subscription: 'other', clusters: otherClusters.map((c: any) => c.name) }
+                    ];
+                    console.log(`clusters`, all);
+                    setCluster(all);
+                });
+        }
+        catch (error) {
+            console.error("Error fetching clusters:", error);
+        }
+    };
+
     return (
         <>
             <div className="navbar">
@@ -32,7 +43,7 @@ function NavBar() {
                     <div className="mx-auto max-w-7xl">
                         <div className="relative flex h-16 items-center justify-between">
                             <div>
-                                <Select>
+                                <Select onOpenChange={fetchClusters}>
                                     <SelectTrigger className="w-[350px]">
                                         <SelectValue placeholder="Select Your K8s Cluster" />
                                     </SelectTrigger>
@@ -87,5 +98,4 @@ function NavBar() {
         </>
     );
 }
-
-export { NavBar };
+export { NavBar }
