@@ -14,9 +14,9 @@ const podDetails = [
 
 function Application() {
     return (
-        <div className="border-1 border-solid border-cyan-200 p-2 text-gray-600">
+        <div className="border-1 border-solid border-cyan-500 p-2 text-gray-600">
             <p className="text-lg font-semibold text-gray-700 pb-2">pod-kj21n321hjkfgdgfdgdgdg</p>
-            <hr className="border-cyan-200" />
+            <hr className="border-cyan-500" />
             <p className="text-l font-semibold flex justify-between pt-2"><span>Namespace</span><span>default</span></p>
             <p className="text-l font-semibold flex justify-between"><span>Status</span><span>Running</span></p>
             <p className="text-l font-semibold flex justify-between"><span>ControllerBy</span><span>DeamonSet</span></p>
@@ -24,19 +24,14 @@ function Application() {
                 <span>Health</span>
                 <span>{false ? <Badge className="bg-green-400">Healthy</Badge> : <Badge className="bg-red-500">Unhealthy</Badge>}</span>
             </p>
-            <div className="mt-2 ">
+            <div>
                 <HoverCard>
                     <HoverCardTrigger asChild>
                         <div className="flex justify-between">
-                            <h4 className="text-sm font-semibold link">@nextjs(hover on link)</h4>
-                            <h4 className="text-sm font-semibold link">
-                                <Badge
-                                    className="h-5 min-w-5 rounded-full px-1 font-mono tabular-nums"
-                                    variant="outline"
-                                >
-                                    50+
-                                </Badge>
-                            </h4>
+                            <p className="text-l font-semibold flex justify-between">Labels(hover on link)</p>
+                            <p className="text-l font-semibold flex justify-between">
+                                <Badge className="mt-1 h-5 min-w-5 rounded-full px-1 font-mono tabular-nums" variant="outline">17+</Badge>
+                            </p>
                         </div>
                     </HoverCardTrigger>
                     <HoverCardContent className="w-80 bg-gray-600">
