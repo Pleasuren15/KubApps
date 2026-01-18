@@ -63,5 +63,37 @@ namespace kubapps.api.Services
                 _logger.LogInformation("{methodName} End", nameof(GetAllPodsAsync));
             }
         }
+
+        public async Task<Process> PortFowardPod(string podName, string @namespace, int localPort, int podPort)
+        {
+            try
+            {
+                _logger.LogInformation("{methodName} Start", nameof(PortFowardPod));
+
+                var startInfo = new ProcessStartInfo
+                {
+                    FileName = "kubectl",
+                    Arguments = $"port-forward pod/{podName} {localPort}:{podPort} -n {@namespace}",
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+
+                var process = new Process { StartInfo = startInfo };
+                process.Start();
+
+                return process;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("{methodName} Error: ErrorMessage {errorMax}", nameof(PortFowardPod), ex.Message);
+                throw;
+            }
+            finally
+            {
+                _logger.LogInformation("{methodName} End", nameof(PortFowardPod));
+            }
+        }
     }
 }
