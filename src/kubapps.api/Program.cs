@@ -17,10 +17,18 @@ namespace kubapps.api
 
             app.MapGet("/getAllCluster", (IContextService contextService) =>
             {
-                var results = contextService.GetClustersAsync();
+                var results = contextService.GetClusters();
                 return results;
             })
             .WithName("GetAllClusters");
+
+
+            app.MapGet("/getAllPods", (IPodService podService) =>
+            {
+                var results = podService.GetAllPodsAsync();
+                return results;
+            })
+            .WithName("GetAllPods");
 
             app.Run();
         }

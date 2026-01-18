@@ -14,6 +14,7 @@ public static class ServiceCollectionExtensions
 
         // Add application services
         services.AddSingleton<IContextService, ContextService>();
+        services.AddSingleton<IPodService, PodService>();
 
         return services;
     }

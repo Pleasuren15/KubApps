@@ -98,6 +98,11 @@ function Applications() {
             <Application />
             <Application />
             <Application />
+            <Application />
+            <Application />
+            <Application />
+            <Application />
+            <Application />
         </div>
     )
 }

@@ -4,5 +4,5 @@ namespace kubapps.api.Services.Interfaces;
 
 public interface IContextService
 {
-    IList<Cluster> GetClustersAsync();
+    IList<Cluster> GetClusters();
 }
