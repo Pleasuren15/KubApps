@@ -1,13 +1,15 @@
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger, } from "@/components/ui/accordion"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "../ui/button"
 import { Separator } from "@radix-ui/react-select"
 import { ButtonGroup } from "@/components/ui/button-group"
+import { Button } from "@/components/ui/button"
+import { HoverCard, HoverCardContent, HoverCardTrigger, } from "@/components/ui/hover-card"
+
 
 const podDetails = [
-    { name: "pod-kj21n321hjkfgdgfdgdgdg", namespace: "default", status: "Running", restarts: 2, age: "3d", health: "healthy" },
-    { name: "pod-das9876dsa65dsa", namespace: "apps-of-app", status: "Pending", restarts: 0, age: "1d", health: "unhealthy" },
-    { name: "pod-gsayudkg765akj", namespace: "monitoring", status: "Succeeded", restarts: 1, age: "5d", health: "healthy" },
+    { name: "pod-kj21n321hjkfgdgfdgdgdg", namespace: "default", status: "Running", restarts: 2, age: "3d", health: "healthy", labels: { app: "nginx", tier: "frontend" } },
+    { name: "pod-das9876dsa65dsa", namespace: "apps-of-app", status: "Pending", restarts: 0, age: "1d", health: "unhealthy", labels: { app: "redis", tier: "backend" } },
+    { name: "pod-gsayudkg765akj", namespace: "monitoring", status: "Succeeded", restarts: 1, age: "5d", health: "healthy", labels: { app: "prometheus", tier: "monitoring", } },
 ]
 
 function Application() {
@@ -22,6 +24,25 @@ function Application() {
                 <span>Health</span>
                 <span>{false ? <Badge className="bg-green-400">Healthy</Badge> : <Badge className="bg-red-500">Unhealthy</Badge>}</span>
             </p>
+            <div className="mt-2 ">
+                <HoverCard>
+                    <HoverCardTrigger asChild>
+                        <h4 className="text-sm font-semibold link">@nextjs(hover on link)</h4>
+                    </HoverCardTrigger>
+                    <HoverCardContent className="w-80 bg-gray-600">
+                        <div className="flex justify-between gap-4">
+                            <div className="space-y-1">
+                                <Badge className="mr-1" variant="secondary">nginx</Badge>
+                                <Badge className="mr-1" variant="secondary">frontend</Badge>
+                                <Badge className="mr-1" variant="secondary">redis</Badge>
+                                <Badge className="mr-1" variant="secondary">backend</Badge>
+                                <Badge className="mr-1" variant="secondary">prometheus</Badge>
+                                <Badge className="mr-1" variant="secondary">monitoring</Badge>
+                            </div>
+                        </div>
+                    </HoverCardContent>
+                </HoverCard>
+            </div>
             <div className="mt-2">
                 <ButtonGroup className="w-full flex">
                     <Button className="flex-1 cursor-pointer" variant="outline">
