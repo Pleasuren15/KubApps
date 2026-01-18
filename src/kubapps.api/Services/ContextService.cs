@@ -21,13 +21,16 @@ public class ContextService(ILogger<ContextService> logger) : IContextService
                 clusters.Add(cluster);
             }
 
-            _logger.LogInformation("{methodName} End: ClusterCount {clusterCount}", nameof(GetClusters), clusters.Count);
             return clusters;
         }
         catch (Exception ex)
         {
             _logger.LogError("{methodName} Error: ErrorMessage {errorMax}", nameof(GetClusters), ex.Message);
             throw;
+        }
+        finally
+        {
+            _logger.LogInformation("{methodName} End", nameof(GetClusters));
         }
     }
 }
