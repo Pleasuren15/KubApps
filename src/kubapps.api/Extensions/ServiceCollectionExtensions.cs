@@ -11,6 +11,15 @@ public static class ServiceCollectionExtensions
         services.AddAuthorization();
         services.AddOpenApi();
         services.AddLogging();
+        services.AddCors(options =>
+        {
+            options.AddDefaultPolicy(builder =>
+            {
+                builder.AllowAnyOrigin()
+                       .AllowAnyMethod()
+                       .AllowAnyHeader();
+            });
+        });
 
         // Add application services
         services.AddSingleton<IContextService, ContextService>();

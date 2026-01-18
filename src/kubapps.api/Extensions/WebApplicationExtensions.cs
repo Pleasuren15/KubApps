@@ -17,6 +17,7 @@ public static class WebApplicationExtensions
             });
         }
 
+        webApplication.UseCors();
         webApplication.UseHttpsRedirection();
         webApplication.UseAuthorization();
 
