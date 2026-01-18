@@ -1,4 +1,5 @@
 import { Applications } from "./components/kubapps/applications"
+import Footer from "./components/kubapps/footer"
 import { NavBar } from "./components/kubapps/navbar"
 
 function App() {
@@ -6,6 +7,7 @@ function App() {
     <div className="">
       <NavBar />
       <Applications />
+      <Footer />
     </div>
   )
 }
