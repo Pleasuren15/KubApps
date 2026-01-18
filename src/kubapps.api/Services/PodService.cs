@@ -11,14 +11,14 @@ namespace kubapps.api.Services
     {
         private readonly ILogger<ContextService> _logger = logger;
 
-        public async Task<IList<Pod>> GetAllPodsAsync()
+        public async Task<IList<Pod>> GetAllPodsAsync(string clusterName)
         {
             try
             {
                 _logger.LogInformation("{methodName} Start", nameof(GetAllPodsAsync));
 
                 var kubeConfig = KubernetesClientConfiguration.LoadKubeConfig();
-                var config = KubernetesClientConfiguration.BuildConfigFromConfigObject(kubeConfig);
+                var config = KubernetesClientConfiguration.BuildConfigFromConfigObject(kubeConfig, clusterName);
                 var client = new Kubernetes(config);
                 var pods = new List<Pod>();
 

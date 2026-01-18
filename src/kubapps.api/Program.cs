@@ -20,15 +20,15 @@ namespace kubapps.api
                 var results = contextService.GetClusters();
                 return results;
             })
-            .WithName("GetAllClusters");
+            .WithName("AllClusters");
 
 
-            app.MapGet("/getAllPods", (IPodService podService) =>
+            app.MapGet("/pods/{clusterName}", async (IPodService podService, string clusterName) =>
             {
-                var results = podService.GetAllPodsAsync();
+                var results = await podService.GetAllPodsAsync(clusterName);
                 return results;
             })
-            .WithName("GetAllPods");
+            .WithName("AllPods");
 
             app.Run();
         }
