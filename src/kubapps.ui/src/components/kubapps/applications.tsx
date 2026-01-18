@@ -4,13 +4,12 @@ import { Button } from "@/components/ui/button"
 import { HoverCard, HoverCardContent, HoverCardTrigger, } from "@/components/ui/hover-card"
 import { Drawer, DrawerClose, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger, } from "@/components/ui/drawer"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import axios from "axios";
+import { useState } from "react"
 
-
-const podDetails = [
-    { name: "pod-kj21n321hjkfgdgfdgdgdg", namespace: "default", status: "Running", restarts: 2, age: "3d", health: "healthy", labels: { app: "nginx", tier: "frontend" } },
-    { name: "pod-das9876dsa65dsa", namespace: "apps-of-app", status: "Pending", restarts: 0, age: "1d", health: "unhealthy", labels: { app: "redis", tier: "backend" } },
-    { name: "pod-gsayudkg765akj", namespace: "monitoring", status: "Succeeded", restarts: 1, age: "5d", health: "healthy", labels: { app: "prometheus", tier: "monitoring", } },
-]
+const api = axios.create({
+    baseURL: "https://localhost:7291/"
+});
 
 function Application() {
     return (

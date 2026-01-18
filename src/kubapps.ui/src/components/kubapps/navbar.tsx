@@ -13,8 +13,11 @@ const api = axios.create({
     },
 });
 
+
+
 function NavBar() {
     const [clusters, setCluster] = useState([{ subscription: '', clusters: [] }]);
+    const [pods, setPods] = useState([{ "name": "", "namespace": "", "status": "", "controlledBy": "", "isReady": false, "labels": [], "dateTimeCreated": "" }]);
 
     const fetchClusters = async () => {
         try {
@@ -24,8 +27,8 @@ function NavBar() {
                     const prClusters = res.data.filter((c: any) => c.name.includes('prod'));
                     const otherClusters = res.data.filter((c: any) => !c.name.includes('sta') && !c.name.includes('prod'));
                     const all = [{ subscription: 'staging', clusters: stagingClusters.map((c: any) => c.name) },
-                        { subscription: 'production', clusters: prClusters.map((c: any) => c.name) },
-                        { subscription: 'other', clusters: otherClusters.map((c: any) => c.name) }
+                    { subscription: 'production', clusters: prClusters.map((c: any) => c.name) },
+                    { subscription: 'other', clusters: otherClusters.map((c: any) => c.name) }
                     ];
                     console.log(`clusters`, all);
                     setCluster(all);
@@ -35,6 +38,17 @@ function NavBar() {
             console.error("Error fetching clusters:", error);
         }
     };
+    const fetchPods = async (cluster: any) => {
+        try {
+            await api.get(`/pods/${cluster}`)
+                .then(res => {
+                    console.log(`pods`, res.data);
+                    setPods(res.data);
+                });
+        } catch (error) {
+            console.error("Error fetching pods:", error);
+        }
+    }
 
     return (
         <>
@@ -43,7 +57,7 @@ function NavBar() {
                     <div className="mx-auto max-w-7xl">
                         <div className="relative flex h-16 items-center justify-between">
                             <div>
-                                <Select onOpenChange={fetchClusters}>
+                                <Select onOpenChange={() => fetchClusters()} onValueChange={(value) => fetchPods(value)}>
                                     <SelectTrigger className="w-[350px]">
                                         <SelectValue placeholder="Select Your K8s Cluster" />
                                     </SelectTrigger>
