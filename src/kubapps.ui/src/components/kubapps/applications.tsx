@@ -4,6 +4,7 @@ import { Separator } from "@radix-ui/react-select"
 import { ButtonGroup } from "@/components/ui/button-group"
 import { Button } from "@/components/ui/button"
 import { HoverCard, HoverCardContent, HoverCardTrigger, } from "@/components/ui/hover-card"
+import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger, } from "@/components/ui/drawer"
 
 
 const podDetails = [
@@ -49,10 +50,28 @@ function Application() {
                 </HoverCard>
             </div>
             <div className="mt-2">
-                <ButtonGroup className="w-full flex ">
-                    <Button className="flex-1 cursor-pointer" variant="outline">
-                        View Logs
-                    </Button>
+                <ButtonGroup className="w-full flex">
+                    <Drawer>
+                        <DrawerTrigger asChild>
+                            <Button className="flex-1 cursor-pointer" variant="outline">
+                                View Logs
+                            </Button>
+                        </DrawerTrigger>
+                        <DrawerContent>
+                            <div className="mx-auto">
+                                <DrawerHeader>
+                                    <DrawerTitle>Move Goal</DrawerTitle>
+                                    <DrawerDescription>Set your daily activity goal.</DrawerDescription>
+                                </DrawerHeader>
+                                <DrawerFooter>
+                                    <DrawerClose asChild>
+                                        <Button variant="destructive">Cancel</Button>
+                                    </DrawerClose>
+                                </DrawerFooter>
+                            </div>
+                        </DrawerContent>
+                    </Drawer>
+
                     <Button className="flex-1 cursor-pointer bg-blue-600 hover:bg-blue-700">
                         Forward Pod
                     </Button>
