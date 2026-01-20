@@ -262,3 +262,40 @@
 .animation-delay-5000 {
   animation-delay: 5s;
 }
+
+/* Responsive animation adjustments */
+@media (max-width: 640px) {
+  .animate-blob {
+    animation: blob 9s infinite;
+  }
+  
+  .animate-float {
+    animation: float 10s ease-in-out infinite;
+  }
+  
+  .animate-bubble {
+    animation: bubble 8s ease-in-out infinite;
+  }
+  
+  .animate-rise {
+    animation: rise 12s linear infinite;
+  }
+}
+
+@media (min-width: 1024px) {
+  .animate-blob {
+    animation: blob 6s infinite;
+  }
+  
+  .animate-float {
+    animation: float 7s ease-in-out infinite;
+  }
+  
+  .animate-bubble {
+    animation: bubble 5s ease-in-out infinite;
+  }
+  
+  .animate-rise {
+    animation: rise 8s linear infinite;
+  }
+}

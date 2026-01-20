@@ -5,6 +5,8 @@ import { HoverCard, HoverCardContent, HoverCardTrigger, } from "@/components/ui/
 import { Drawer, DrawerClose, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger, } from "@/components/ui/drawer"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Skeleton } from "@/components/ui/skeleton"
+import { Input } from "@/components/ui/input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { usePods } from "@/contexts/PodContext";
 import axios from "axios";
 
@@ -59,12 +61,12 @@ function SkeletonCard() {
 
 function Application({ pod }: ApplicationProps) {
     return (
-        <div className="border-1 border-solid border-cyan-500 p-2 text-gray-600 bg-white shadow-sm hover:shadow-md transition-all duration-200 hover:scale-[1.02]">
-            <p className="text-lg font-semibold text-gray-700 pb-2" title={pod.name}>{pod.name.length > 40 ? pod.name.substring(0,40) + "..." : pod.name}</p>
+        <div className="border-1 border-solid border-cyan-500 p-2 sm:p-3 text-gray-600 bg-white shadow-sm hover:shadow-md transition-all duration-200 hover:scale-[1.02] w-full">
+            <p className="text-sm sm:text-lg font-semibold text-gray-700 pb-2" title={pod.name}>{pod.name.length > (window.innerWidth < 640 ? 25 : 40) ? pod.name.substring(0, window.innerWidth < 640 ? 25 : 40) + "..." : pod.name}</p>
             <hr className="border-cyan-500" />
-            <p className="text-l font-semibold flex justify-between pt-2"><span>Namespace</span><span>{pod.namespace}</span></p>
-            <p className="text-l font-semibold flex justify-between"><span>Status</span><span>{pod.status}</span></p>
-            <p className="text-l font-semibold flex justify-between"><span>ControllerBy</span><span>{pod.controlledBy}</span></p>
+            <p className="text-xs sm:text-l font-semibold flex justify-between pt-2"><span>Namespace</span><span className="truncate ml-2">{pod.namespace}</span></p>
+            <p className="text-xs sm:text-l font-semibold flex justify-between"><span>Status</span><span className="truncate ml-2">{pod.status}</span></p>
+            <p className="text-xs sm:text-l font-semibold flex justify-between"><span>ControllerBy</span><span className="truncate ml-2">{pod.controlledBy}</span></p>
             <p className="text-l font-semibold flex justify-between">
                 <span>Health</span>
                 <span>{pod.isReady ? <Badge className="bg-green-400">Healthy</Badge> : <Badge className="bg-red-500">Unhealthy</Badge>}</span>
@@ -135,7 +137,7 @@ function Application({ pod }: ApplicationProps) {
 }
 
 function Applications() {
-    const { pods, selectedCluster, paginatedPods, currentPage, isLoading } = usePods();
+    const { pods, selectedCluster, paginatedPods, currentPage, isLoading, searchTerm, setSearchTerm, filteredPods, selectedNamespace, setSelectedNamespace, availableNamespaces } = usePods();
 
     if (!selectedCluster) {
         return (
@@ -177,21 +179,110 @@ function Applications() {
         );
     }
 
+    const getFilterDescription = () => {
+        let description = `Total: ${pods.length} pods`;
+        const hasFilters = searchTerm || selectedNamespace !== 'all';
+        
+        if (hasFilters) {
+            description = `Showing ${filteredPods.length} of ${pods.length} pods`;
+            const filters = [];
+            if (selectedNamespace !== 'all') filters.push(`namespace: ${selectedNamespace}`);
+            if (searchTerm) filters.push('search filter');
+            description += ` (${filters.join(', ')})`;
+        }
+        
+        return description;
+    };
+
     return (
-        <div className="mx-auto max-w-7xl mt-3 min-h-[600px] px-4">
+        <div className="mx-auto max-w-7xl mt-3 min-h-[400px] sm:min-h-[500px] lg:min-h-[600px] px-2 sm:px-4">
             <div className="mb-4">
-                <h2 className="text-xl font-semibold text-gray-800">Cluster: <span className="text-blue-600">{selectedCluster}</span></h2>
-                <p className="text-sm text-gray-600">Total pods: {pods.length}</p>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4 transition-all duration-300 ease-in-out auto-rows-max">
-                {paginatedPods.map((pod, index) => (
-                    <Application key={`${pod.name}-${currentPage}-${index}`} pod={pod} />
-                ))}
-            </div>
-            {pods.length > 9 && (
-                <div className="text-center text-sm text-gray-500 mt-6 p-4 bg-gray-50 rounded-lg">
-                    Showing {((currentPage - 1) * 9) + 1}-{Math.min(currentPage * 9, pods.length)} of {pods.length} pods
+                <div className="flex flex-col gap-4 items-start justify-between mb-4">
+                    <div>
+                        <h2 className="text-lg sm:text-xl font-semibold text-gray-800">Cluster: <span className="text-blue-600">{selectedCluster}</span></h2>
+                        <p className="text-xs sm:text-sm text-gray-600">
+                            {getFilterDescription()}
+                        </p>
+                    </div>
+                    <div className="flex flex-col sm:flex-row gap-3 w-full">
+                        <Input
+                            type="text"
+                            placeholder="Search pods by name, namespace, status, or labels..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="flex-1 transition-all duration-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        />
+                        <Select value={selectedNamespace} onValueChange={setSelectedNamespace}>
+                            <SelectTrigger className="w-full sm:w-48 transition-all duration-200 hover:shadow-md">
+                                <SelectValue placeholder="All Namespaces" />
+                            </SelectTrigger>
+                            <SelectContent className="max-h-60">
+                                <SelectItem value="all">
+                                    <span className="font-medium">All Namespaces</span>
+                                    <span className="text-xs text-gray-500 ml-2">({pods.length})</span>
+                                </SelectItem>
+                                {availableNamespaces.map((namespace) => {
+                                    const count = pods.filter(pod => pod.namespace === namespace).length;
+                                    return (
+                                        <SelectItem key={namespace} value={namespace}>
+                                            <span>{namespace}</span>
+                                            <span className="text-xs text-gray-500 ml-2">({count})</span>
+                                        </SelectItem>
+                                    );
+                                })}
+                            </SelectContent>
+                        </Select>
+                    </div>
                 </div>
+            </div>
+            
+            {filteredPods.length === 0 && (searchTerm || selectedNamespace !== 'all') ? (
+                <div className="text-center text-gray-500 py-12">
+                    <div className="mb-4">
+                        <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                    </div>
+                    <p className="text-lg font-medium mb-2">No pods found</p>
+                    <p className="text-sm mb-4">
+                        No pods match your current filters
+                        {searchTerm && ` for "${searchTerm}"`}
+                        {selectedNamespace !== 'all' && ` in namespace "${selectedNamespace}"`}
+                    </p>
+                    <div className="flex gap-2 justify-center">
+                        {searchTerm && (
+                            <Button 
+                                variant="outline" 
+                                size="sm" 
+                                onClick={() => setSearchTerm('')}
+                            >
+                                Clear search
+                            </Button>
+                        )}
+                        {selectedNamespace !== 'all' && (
+                            <Button 
+                                variant="outline" 
+                                size="sm" 
+                                onClick={() => setSelectedNamespace('all')}
+                            >
+                                Show all namespaces
+                            </Button>
+                        )}
+                    </div>
+                </div>
+            ) : (
+                <>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-3 sm:gap-4 transition-all duration-300 ease-in-out auto-rows-max">
+                        {paginatedPods.map((pod, index) => (
+                            <Application key={`${pod.name}-${currentPage}-${index}`} pod={pod} />
+                        ))}
+                    </div>
+                    {filteredPods.length > 9 && (
+                        <div className="text-center text-xs sm:text-sm text-gray-500 mt-4 sm:mt-6 p-3 sm:p-4 bg-gray-50 rounded-lg">
+                            Showing {((currentPage - 1) * 9) + 1}-{Math.min(currentPage * 9, filteredPods.length)} of {filteredPods.length} {(searchTerm || selectedNamespace !== 'all') ? 'filtered ' : ''}pods
+                        </div>
+                    )}
+                </>
             )}
         </div>
     )

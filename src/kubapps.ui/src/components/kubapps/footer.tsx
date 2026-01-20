@@ -2,10 +2,10 @@ import { Pagination, PaginationContent, PaginationItem, PaginationLink, Paginati
 import { usePods } from "@/contexts/PodContext";
 
 function Footer() {
-    const { currentPage, setCurrentPage, totalPages, pods } = usePods();
+    const { currentPage, setCurrentPage, totalPages, filteredPods } = usePods();
 
     // Don't show pagination if there are no pods or only one page
-    if (pods.length <= 9) {
+    if (filteredPods.length <= 9) {
         return null;
     }
 
@@ -27,7 +27,7 @@ function Footer() {
                         <PaginationLink 
                             onClick={() => handlePageChange(i)}
                             isActive={currentPage === i}
-                            className="cursor-pointer transition-all duration-200 hover:bg-blue-50 hover:scale-105"
+                            className="cursor-pointer transition-all duration-200 hover:bg-blue-50 hover:scale-105 text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2 min-w-[32px] sm:min-w-[40px]"
                         >
                             {i}
                         </PaginationLink>
@@ -130,13 +130,13 @@ function Footer() {
     };
 
     return (
-        <div className="mx-auto max-w-7xl fixed bottom-0 left-0 right-0 bg-white border-t mt-5 py-2 shadow-lg">
+        <div className="mx-auto max-w-7xl fixed bottom-0 left-0 right-0 bg-white border-t mt-5 py-1 sm:py-2 shadow-lg">
             <Pagination className="justify-center">
-                <PaginationContent>
+                <PaginationContent className="gap-1 sm:gap-2">
                     <PaginationItem>
                         <PaginationPrevious 
                             onClick={() => handlePageChange(currentPage - 1)}
-                            className={`cursor-pointer transition-all duration-200 ${
+                            className={`cursor-pointer transition-all duration-200 text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2 ${
                                 currentPage === 1 
                                     ? 'opacity-50 cursor-not-allowed' 
                                     : 'hover:bg-blue-50 hover:scale-105'
@@ -147,7 +147,7 @@ function Footer() {
                     <PaginationItem>
                         <PaginationNext 
                             onClick={() => handlePageChange(currentPage + 1)}
-                            className={`cursor-pointer transition-all duration-200 ${
+                            className={`cursor-pointer transition-all duration-200 text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2 ${
                                 currentPage === totalPages 
                                     ? 'opacity-50 cursor-not-allowed' 
                                     : 'hover:bg-blue-50 hover:scale-105'

@@ -58,22 +58,21 @@ function NavBar() {
     return (
         <>
             <div className="navbar">
-                <nav className="relative border-b border-gray-200 bg-white px-4 sm:px-6 lg:px-8 shadow-sm">
+                <nav className="relative border-b border-gray-200 bg-white px-2 sm:px-4 lg:px-8 shadow-sm">
                     <div className="mx-auto max-w-7xl">
-                        <div className="relative flex h-16 items-center justify-between">
-                            <div className="flex items-center gap-4">
-                                <h1 className="text-xl font-bold text-gray-800">KubApps</h1>
+                        <div className="relative flex h-14 sm:h-16 items-center justify-between flex-wrap gap-2 sm:gap-0">
+                            <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
                                 <Select onOpenChange={() => fetchClusters()} onValueChange={(value) => fetchPods(value)}>
-                                    <SelectTrigger className="w-[350px] transition-all duration-200 hover:shadow-md">
+                                    <SelectTrigger className="w-[280px] sm:w-[350px] transition-all duration-200 hover:shadow-md">
                                         <SelectValue placeholder="Select Your K8s Cluster" />
                                     </SelectTrigger>
-                                    <SelectContent className="max-h-80">
+                                    <SelectContent className="max-h-60 sm:max-h-80">
                                         {clusters.map((subscription) => (
                                             <SelectGroup key={subscription.subscription}>
                                                 <SelectLabel className="font-semibold text-blue-600">{subscription.subscription.toUpperCase()}</SelectLabel>
                                                 {subscription.clusters.map((cluster) => (
                                                     <SelectItem key={cluster} value={cluster} className="hover:bg-blue-50">
-                                                        {cluster}
+                                                        <span className="truncate">{cluster}</span>
                                                     </SelectItem>
                                                 ))}
                                             </SelectGroup>
