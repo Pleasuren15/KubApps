@@ -100,7 +100,7 @@ function Application({ pod }: ApplicationProps) {
 }
 
 function Applications() {
-    const { pods, selectedCluster } = usePods();
+    const { pods, selectedCluster, paginatedPods, currentPage } = usePods();
 
     if (!selectedCluster) {
         return (
@@ -119,10 +119,17 @@ function Applications() {
     }
 
     return (
-        <div className="mx-auto max-w-7xl mt-3 grid grid-cols-4 gap-4">
-            {pods.map((pod, index) => (
-                <Application key={`${pod.name}-${index}`} pod={pod} />
-            ))}
+        <div className="mx-auto max-w-7xl mt-3 min-h-[600px]">
+            <div className="grid grid-cols-3 gap-4 transition-all duration-300 ease-in-out">
+                {paginatedPods.map((pod, index) => (
+                    <Application key={`${pod.name}-${currentPage}-${index}`} pod={pod} />
+                ))}
+            </div>
+            {pods.length > 9 && (
+                <div className="text-center text-sm text-gray-500 mt-4">
+                    Showing {((currentPage - 1) * 9) + 1}-{Math.min(currentPage * 9, pods.length)} of {pods.length} pods
+                </div>
+            )}
         </div>
     )
 }
