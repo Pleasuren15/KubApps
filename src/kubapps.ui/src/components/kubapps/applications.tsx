@@ -29,7 +29,7 @@ interface ApplicationProps {
 function Application({ pod }: ApplicationProps) {
     return (
         <div className="border-1 border-solid border-cyan-500 p-2 text-gray-600">
-            <p className="text-lg font-semibold text-gray-700 pb-2">{pod.name}</p>
+            <p className="text-lg font-semibold text-gray-700 pb-2">{pod.name.length > 40 ? pod.name.substring(0,40) + "..." : pod.name}</p>
             <hr className="border-cyan-500" />
             <p className="text-l font-semibold flex justify-between pt-2"><span>Namespace</span><span>{pod.namespace}</span></p>
             <p className="text-l font-semibold flex justify-between"><span>Status</span><span>{pod.status}</span></p>
