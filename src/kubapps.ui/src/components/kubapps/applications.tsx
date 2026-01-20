@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import { HoverCard, HoverCardContent, HoverCardTrigger, } from "@/components/ui/hover-card"
 import { Drawer, DrawerClose, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger, } from "@/components/ui/drawer"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { usePods } from "@/contexts/PodContext";
 import axios from "axios";
 import { useState } from "react"
 
@@ -11,17 +12,31 @@ const api = axios.create({
     baseURL: "https://localhost:7291/"
 });
 
-function Application() {
+interface Pod {
+    name: string;
+    namespace: string;
+    status: string;
+    controlledBy: string;
+    isReady: boolean;
+    labels: string[];
+    dateTimeCreated: string;
+}
+
+interface ApplicationProps {
+    pod: Pod;
+}
+
+function Application({ pod }: ApplicationProps) {
     return (
         <div className="border-1 border-solid border-cyan-500 p-2 text-gray-600">
-            <p className="text-lg font-semibold text-gray-700 pb-2">pod-kj21n321hjkfgdgfdgdgdg</p>
+            <p className="text-lg font-semibold text-gray-700 pb-2">{pod.name}</p>
             <hr className="border-cyan-500" />
-            <p className="text-l font-semibold flex justify-between pt-2"><span>Namespace</span><span>default</span></p>
-            <p className="text-l font-semibold flex justify-between"><span>Status</span><span>Running</span></p>
-            <p className="text-l font-semibold flex justify-between"><span>ControllerBy</span><span>DeamonSet</span></p>
+            <p className="text-l font-semibold flex justify-between pt-2"><span>Namespace</span><span>{pod.namespace}</span></p>
+            <p className="text-l font-semibold flex justify-between"><span>Status</span><span>{pod.status}</span></p>
+            <p className="text-l font-semibold flex justify-between"><span>ControllerBy</span><span>{pod.controlledBy}</span></p>
             <p className="text-l font-semibold flex justify-between">
                 <span>Health</span>
-                <span>{false ? <Badge className="bg-green-400">Healthy</Badge> : <Badge className="bg-red-500">Unhealthy</Badge>}</span>
+                <span>{pod.isReady ? <Badge className="bg-green-400">Healthy</Badge> : <Badge className="bg-red-500">Unhealthy</Badge>}</span>
             </p>
             <div>
                 <HoverCard>
@@ -29,19 +44,16 @@ function Application() {
                         <div className="flex justify-between">
                             <p className="text-l font-semibold flex justify-between">Labels</p>
                             <p className="text-l font-semibold flex justify-between">
-                                <Badge className="mt-1 h-5 min-w-5 rounded-full px-1 font-mono tabular-nums" variant="outline">17+</Badge>
+                                <Badge className="mt-1 h-5 min-w-5 rounded-full px-1 font-mono tabular-nums" variant="outline">{pod.labels.length}+</Badge>
                             </p>
                         </div>
                     </HoverCardTrigger>
                     <HoverCardContent className="w-80 bg-blue-600">
                         <div className="flex justify-between gap-4">
                             <div className="space-y-1">
-                                <Badge className="mr-1" variant="secondary">nginx</Badge>
-                                <Badge className="mr-1" variant="secondary">frontend</Badge>
-                                <Badge className="mr-1" variant="secondary">redis</Badge>
-                                <Badge className="mr-1" variant="secondary">backend</Badge>
-                                <Badge className="mr-1" variant="secondary">prometheus</Badge>
-                                <Badge className="mr-1" variant="secondary">monitoring</Badge>
+                                {pod.labels.map((label, index) => (
+                                    <Badge key={index} className="mr-1" variant="secondary">{label}</Badge>
+                                ))}
                             </div>
                         </div>
                     </HoverCardContent>
@@ -59,7 +71,7 @@ function Application() {
                         <DrawerContent>
                             <div className="w-full px-4">
                                 <DrawerHeader className="mx-auto w-3/4 text-left px-0">
-                                    <DrawerTitle className="text-left">Pod Logs: pod-gsayudkg765akj</DrawerTitle>
+                                    <DrawerTitle className="text-left">Pod Logs: {pod.name}</DrawerTitle>
                                 </DrawerHeader>
                                 <ScrollArea className="mx-auto w-3/4 rounded-md border">
                                     <div className="p-4">
@@ -88,20 +100,29 @@ function Application() {
 }
 
 function Applications() {
+    const { pods, selectedCluster } = usePods();
+
+    if (!selectedCluster) {
+        return (
+            <div className="mx-auto max-w-7xl mt-3 text-center text-gray-500">
+                <p>Please select a cluster to view applications</p>
+            </div>
+        );
+    }
+
+    if (pods.length === 0) {
+        return (
+            <div className="mx-auto max-w-7xl mt-3 text-center text-gray-500">
+                <p>No pods found in the selected cluster</p>
+            </div>
+        );
+    }
+
     return (
         <div className="mx-auto max-w-7xl mt-3 grid grid-cols-4 gap-4">
-            <Application />
-            <Application />
-            <Application />
-            <Application />
-            <Application />
-            <Application />
-            <Application />
-            <Application />
-            <Application />
-            <Application />
-            <Application />
-            <Application />
+            {pods.map((pod, index) => (
+                <Application key={`${pod.name}-${index}`} pod={pod} />
+            ))}
         </div>
     )
 }

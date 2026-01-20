@@ -2,6 +2,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
 import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger, } from "@/components/ui/sheet"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
+import { usePods } from "@/contexts/PodContext";
 import axios from "axios";
 import { useState } from 'react';
 
@@ -17,7 +18,7 @@ const api = axios.create({
 
 function NavBar() {
     const [clusters, setCluster] = useState([{ subscription: '', clusters: [] }]);
-    const [pods, setPods] = useState([{ "name": "", "namespace": "", "status": "", "controlledBy": "", "isReady": false, "labels": [], "dateTimeCreated": "" }]);
+    const { pods, setPods, selectedCluster, setSelectedCluster } = usePods();
 
     const fetchClusters = async () => {
         try {
@@ -40,6 +41,7 @@ function NavBar() {
     };
     const fetchPods = async (cluster: any) => {
         try {
+            setSelectedCluster(cluster);
             await api.get(`/pods/${cluster}`)
                 .then(res => {
                     console.log(`pods`, res.data);

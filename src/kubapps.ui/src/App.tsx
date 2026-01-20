@@ -1,14 +1,17 @@
 import { Applications } from "./components/kubapps/applications"
 import Footer from "./components/kubapps/footer"
 import { NavBar } from "./components/kubapps/navbar"
+import { PodProvider } from "./contexts/PodContext"
 
 function App() {
   return (
-    <div className="">
-      <NavBar />
-      <Applications />
-      <Footer />
-    </div>
+    <PodProvider>
+      <div className="">
+        <NavBar />
+        <Applications />
+        <Footer />
+      </div>
+    </PodProvider>
   )
 }
 
