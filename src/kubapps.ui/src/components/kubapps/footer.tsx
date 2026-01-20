@@ -27,7 +27,7 @@ function Footer() {
                         <PaginationLink 
                             onClick={() => handlePageChange(i)}
                             isActive={currentPage === i}
-                            className="cursor-pointer transition-all duration-200 hover:bg-blue-50"
+                            className="cursor-pointer transition-all duration-200 hover:bg-blue-50 hover:scale-105"
                         >
                             {i}
                         </PaginationLink>
@@ -139,7 +139,7 @@ function Footer() {
                             className={`cursor-pointer transition-all duration-200 ${
                                 currentPage === 1 
                                     ? 'opacity-50 cursor-not-allowed' 
-                                    : 'hover:bg-blue-50'
+                                    : 'hover:bg-blue-50 hover:scale-105'
                             }`}
                         />
                     </PaginationItem>
@@ -150,7 +150,7 @@ function Footer() {
                             className={`cursor-pointer transition-all duration-200 ${
                                 currentPage === totalPages 
                                     ? 'opacity-50 cursor-not-allowed' 
-                                    : 'hover:bg-blue-50'
+                                    : 'hover:bg-blue-50 hover:scale-105'
                             }`}
                         />
                     </PaginationItem>

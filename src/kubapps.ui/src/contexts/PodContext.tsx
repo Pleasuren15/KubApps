@@ -20,6 +20,8 @@ interface PodContextType {
     itemsPerPage: number;
     totalPages: number;
     paginatedPods: Pod[];
+    isLoading: boolean;
+    setIsLoading: (loading: boolean) => void;
 }
 
 const PodContext = createContext<PodContextType | undefined>(undefined);
@@ -40,6 +42,7 @@ export const PodProvider: React.FC<PodProviderProps> = ({ children }) => {
     const [pods, setPods] = useState<Pod[]>([]);
     const [selectedCluster, setSelectedCluster] = useState<string | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
+    const [isLoading, setIsLoading] = useState(false);
     const itemsPerPage = 9;
 
     const totalPages = useMemo(() => Math.ceil(pods.length / itemsPerPage), [pods.length]);
@@ -66,7 +69,9 @@ export const PodProvider: React.FC<PodProviderProps> = ({ children }) => {
             setCurrentPage, 
             itemsPerPage, 
             totalPages, 
-            paginatedPods 
+            paginatedPods,
+            isLoading,
+            setIsLoading
         }}>
             {children}
         </PodContext.Provider>

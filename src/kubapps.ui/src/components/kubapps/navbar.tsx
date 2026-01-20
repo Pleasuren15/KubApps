@@ -18,7 +18,7 @@ const api = axios.create({
 
 function NavBar() {
     const [clusters, setCluster] = useState([{ subscription: '', clusters: [] }]);
-    const { pods, setPods, selectedCluster, setSelectedCluster } = usePods();
+    const { setPods, setSelectedCluster, setIsLoading } = usePods();
 
     const fetchClusters = async () => {
         try {
@@ -41,6 +41,7 @@ function NavBar() {
     };
     const fetchPods = async (cluster: any) => {
         try {
+            setIsLoading(true);
             setSelectedCluster(cluster);
             await api.get(`/pods/${cluster}`)
                 .then(res => {
@@ -49,26 +50,29 @@ function NavBar() {
                 });
         } catch (error) {
             console.error("Error fetching pods:", error);
+        } finally {
+            setIsLoading(false);
         }
     }
 
     return (
         <>
             <div className="navbar">
-                <nav className="relative border-b border-gray-200 bg-white px-4 sm:px-6 lg:px-8">
+                <nav className="relative border-b border-gray-200 bg-white px-4 sm:px-6 lg:px-8 shadow-sm">
                     <div className="mx-auto max-w-7xl">
                         <div className="relative flex h-16 items-center justify-between">
-                            <div>
+                            <div className="flex items-center gap-4">
+                                <h1 className="text-xl font-bold text-gray-800">KubApps</h1>
                                 <Select onOpenChange={() => fetchClusters()} onValueChange={(value) => fetchPods(value)}>
-                                    <SelectTrigger className="w-[350px]">
+                                    <SelectTrigger className="w-[350px] transition-all duration-200 hover:shadow-md">
                                         <SelectValue placeholder="Select Your K8s Cluster" />
                                     </SelectTrigger>
-                                    <SelectContent>
+                                    <SelectContent className="max-h-80">
                                         {clusters.map((subscription) => (
                                             <SelectGroup key={subscription.subscription}>
-                                                <SelectLabel>{subscription.subscription}</SelectLabel>
+                                                <SelectLabel className="font-semibold text-blue-600">{subscription.subscription.toUpperCase()}</SelectLabel>
                                                 {subscription.clusters.map((cluster) => (
-                                                    <SelectItem key={cluster} value={cluster}>
+                                                    <SelectItem key={cluster} value={cluster} className="hover:bg-blue-50">
                                                         {cluster}
                                                     </SelectItem>
                                                 ))}
