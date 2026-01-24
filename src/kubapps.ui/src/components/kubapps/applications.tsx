@@ -102,7 +102,7 @@ function Application({ pod }: ApplicationProps) {
 
     return (
         <div className="p-2 sm:p-3 text-gray-600 bg-white shadow-sm hover:shadow-md transition-all duration-200 hover:scale-[1.02] w-full rounded-lg">
-            <p className="text-sm sm:text-lg font-semibold text-gray-700 pb-2" title={pod.name}>{pod.name.length > (window.innerWidth < 640 ? 25 : 40) ? pod.name.substring(0, window.innerWidth < 640 ? 25 : 40) + "..." : pod.name}</p>
+            <p className="text-sm sm:text-lg font-semibold text-gray-700 pb-2" title={pod.name}>{pod.name.length > (window.innerWidth <  20) ? pod.name.substring(0,  20) + "..." : pod.name}</p>
             <hr className="border-gray-200" />
             <p className="text-xs sm:text-l font-semibold flex justify-between pt-2"><span>Namespace</span><span className="truncate ml-2">{pod.namespace}</span></p>
             <p className="text-xs sm:text-l font-semibold flex justify-between"><span>Status</span><span className="truncate ml-2">{pod.status}</span></p>
