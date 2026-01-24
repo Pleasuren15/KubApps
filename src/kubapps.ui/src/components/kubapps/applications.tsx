@@ -8,6 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { usePods } from "@/contexts/PodContext";
+import { useState } from "react";
 import axios from "axios";
 
 interface Pod {
@@ -22,6 +23,16 @@ interface Pod {
 
 interface ApplicationProps {
     pod: Pod;
+}
+
+async function getPodLogs(clusterName: string, namespace: string, podName: string) {
+    try {
+        const response = await axios.get(`https://localhost:7291/pods/${clusterName}/namespaces/${namespace}/pods/${podName}/logs`);
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching pod logs:", error);
+        throw error;
+    }
 }
 
 function SkeletonCard() {
@@ -60,6 +71,54 @@ function SkeletonCard() {
 }
 
 function Application({ pod }: ApplicationProps) {
+    const [logs, setLogs] = useState<string | null>(null);
+    const [isLoadingLogs, setIsLoadingLogs] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
+    const { selectedCluster } = usePods();
+
+    const handleGetLogs = async () => {
+        console.log('=== HANDLE GET LOGS ===');
+        console.log('selectedCluster:', selectedCluster);
+        console.log('isLoadingLogs:', isLoadingLogs);
+        
+        if (!selectedCluster || isLoadingLogs) {
+            console.log('❌ Early return - no cluster or already loading');
+            return;
+        }
+        
+        console.log('✅ Making API call...');
+        setIsLoadingLogs(true);
+        try {
+            console.log('API URL:', `/pods/${selectedCluster}/namespaces/${pod.namespace}/pods/${pod.name}/logs`);
+            const podLogs = await getPodLogs(selectedCluster, pod.namespace, pod.name);
+            console.log('✅ API call successful, logs received:', typeof podLogs, podLogs?.length || 'no length property');
+            setLogs(podLogs || 'No logs available');
+        } catch (error) {
+            console.error('❌ Failed to fetch pod logs:', error);
+            setLogs('Error: Failed to fetch logs. Please try again.');
+        } finally {
+            setIsLoadingLogs(false);
+        }
+    };
+
+    const handleDrawerOpenChange = (open: boolean) => {
+        console.log('=== DRAWER STATE CHANGE ===');
+        console.log('Opening drawer:', open);
+        console.log('Current logs:', logs);
+        console.log('Is loading logs:', isLoadingLogs);
+        console.log('Selected cluster:', selectedCluster);
+        console.log('Pod name:', pod.name);
+        console.log('Condition check: open && !logs && !isLoadingLogs =', open && !logs && !isLoadingLogs);
+        
+        setIsOpen(open);
+        if (open && !logs && !isLoadingLogs) {
+            console.log('✅ Calling handleGetLogs!');
+            handleGetLogs();
+        } else {
+            console.log('❌ NOT calling handleGetLogs - conditions not met');
+        }
+    };
+
     return (
         <div className="border-1 border-solid border-cyan-500 p-2 sm:p-3 text-gray-600 bg-white shadow-sm hover:shadow-md transition-all duration-200 hover:scale-[1.02] w-full">
             <p className="text-sm sm:text-lg font-semibold text-gray-700 pb-2" title={pod.name}>{pod.name.length > (window.innerWidth < 640 ? 25 : 40) ? pod.name.substring(0, window.innerWidth < 640 ? 25 : 40) + "..." : pod.name}</p>
@@ -98,9 +157,14 @@ function Application({ pod }: ApplicationProps) {
             </div>
             <div className="mt-2">
                 <ButtonGroup className="w-full flex">
-                    <Drawer>
+                    <Drawer open={isOpen} onOpenChange={handleDrawerOpenChange}>
                         <DrawerTrigger asChild>
-                            <Button className="flex-1 cursor-pointer text-left" variant="outline">
+                            <Button 
+                                disabled={!selectedCluster}
+                                className="flex-1 cursor-pointer text-left" 
+                                variant="outline"
+                                onClick={handleGetLogs}
+                            >
                                 View Logs
                             </Button>
                         </DrawerTrigger>
@@ -110,13 +174,23 @@ function Application({ pod }: ApplicationProps) {
                                 <DrawerHeader className="mx-auto w-3/4 text-left px-0">
                                     <DrawerTitle className="text-left">Pod Logs: {pod.name}</DrawerTitle>
                                 </DrawerHeader>
-                                <ScrollArea className="mx-auto w-3/4 rounded-md border">
-                                    <div className="p-4">
-                                        <h4 className="text-sm leading-none font-medium">Connected to database</h4>
-                                        <h4 className="text-sm leading-none font-medium">Connected to database</h4>
-                                        <h4 className="text-sm leading-none font-medium">Request received: GET /health</h4>
-                                        <h4 className="text-sm leading-none font-medium">Starting server on port 8080</h4>
-                                        <h4 className="text-sm leading-none font-medium">Request received: GET /health</h4>
+                                <ScrollArea className="mx-auto w-3/4 rounded-md border h-96">
+                                    <div className="p-4 min-h-full">
+                                        {isLoadingLogs ? (
+                                            <div className="flex items-center justify-center h-32">
+                                                <div className="text-sm text-gray-500">Loading logs...</div>
+                                            </div>
+                                        ) : logs !== null ? (
+                                            <div className="w-full">
+                                                <pre className="text-xs font-mono whitespace-pre-wrap break-words text-gray-800 leading-relaxed">
+                                                    {logs}
+                                                </pre>
+                                            </div>
+                                        ) : (
+                                            <div className="text-sm text-gray-500 text-center py-8">
+                                                Open drawer to fetch pod logs
+                                            </div>
+                                        )}
                                     </div>
                                 </ScrollArea>
                                 <DrawerFooter className="mx-auto w-3/4 flex justify-start px-0">
