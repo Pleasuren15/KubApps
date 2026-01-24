@@ -77,24 +77,16 @@ function Application({ pod }: ApplicationProps) {
     const { selectedCluster } = usePods();
 
     const handleGetLogs = async () => {
-        console.log('=== HANDLE GET LOGS ===');
-        console.log('selectedCluster:', selectedCluster);
-        console.log('isLoadingLogs:', isLoadingLogs);
-        
         if (!selectedCluster || isLoadingLogs) {
-            console.log('❌ Early return - no cluster or already loading');
             return;
         }
         
-        console.log('✅ Making API call...');
         setIsLoadingLogs(true);
         try {
-            console.log('API URL:', `/pods/${selectedCluster}/namespaces/${pod.namespace}/pods/${pod.name}/logs`);
             const podLogs = await getPodLogs(selectedCluster, pod.namespace, pod.name);
-            console.log('✅ API call successful, logs received:', typeof podLogs, podLogs?.length || 'no length property');
             setLogs(podLogs || 'No logs available');
         } catch (error) {
-            console.error('❌ Failed to fetch pod logs:', error);
+            console.error('Failed to fetch pod logs:', error);
             setLogs('Error: Failed to fetch logs. Please try again.');
         } finally {
             setIsLoadingLogs(false);
@@ -102,20 +94,9 @@ function Application({ pod }: ApplicationProps) {
     };
 
     const handleDrawerOpenChange = (open: boolean) => {
-        console.log('=== DRAWER STATE CHANGE ===');
-        console.log('Opening drawer:', open);
-        console.log('Current logs:', logs);
-        console.log('Is loading logs:', isLoadingLogs);
-        console.log('Selected cluster:', selectedCluster);
-        console.log('Pod name:', pod.name);
-        console.log('Condition check: open && !logs && !isLoadingLogs =', open && !logs && !isLoadingLogs);
-        
         setIsOpen(open);
         if (open && !logs && !isLoadingLogs) {
-            console.log('✅ Calling handleGetLogs!');
             handleGetLogs();
-        } else {
-            console.log('❌ NOT calling handleGetLogs - conditions not met');
         }
     };
 
