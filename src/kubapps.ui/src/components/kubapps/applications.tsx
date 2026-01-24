@@ -101,22 +101,22 @@ function Application({ pod }: ApplicationProps) {
     };
 
     return (
-        <div className="border-1 border-solid border-cyan-500 p-2 sm:p-3 text-gray-600 bg-white shadow-sm hover:shadow-md transition-all duration-200 hover:scale-[1.02] w-full">
+        <div className="p-2 sm:p-3 text-gray-600 bg-white shadow-sm hover:shadow-md transition-all duration-200 hover:scale-[1.02] w-full rounded-lg">
             <p className="text-sm sm:text-lg font-semibold text-gray-700 pb-2" title={pod.name}>{pod.name.length > (window.innerWidth < 640 ? 25 : 40) ? pod.name.substring(0, window.innerWidth < 640 ? 25 : 40) + "..." : pod.name}</p>
-            <hr className="border-cyan-500" />
+            <hr className="border-gray-200" />
             <p className="text-xs sm:text-l font-semibold flex justify-between pt-2"><span>Namespace</span><span className="truncate ml-2">{pod.namespace}</span></p>
             <p className="text-xs sm:text-l font-semibold flex justify-between"><span>Status</span><span className="truncate ml-2">{pod.status}</span></p>
             <p className="text-xs sm:text-l font-semibold flex justify-between"><span>ControllerBy</span><span className="truncate ml-2">{pod.controlledBy}</span></p>
-            <p className="text-l font-semibold flex justify-between">
+            <p className="text-xs sm:text-l font-semibold flex justify-between">
                 <span>Health</span>
                 <span>{pod.isReady ? <Badge className="bg-green-400">Healthy</Badge> : <Badge className="bg-red-500">Unhealthy</Badge>}</span>
             </p>
             <div>
                 <HoverCard>
                     <HoverCardTrigger asChild>
-                        <div className="flex justify-between cursor-pointer hover:bg-gray-50 p-1 rounded transition-colors">
-                            <p className="text-l font-semibold flex justify-between">Labels</p>
-                            <p className="text-l font-semibold flex justify-between">
+                        <div className="flex justify-between cursor-pointer hover:bg-gray-50 rounded transition-colors">
+                            <p className="text-xs sm:text-l font-semibold flex justify-between">Labels</p>
+                            <p className="text-xs sm:text-l font-semibold flex justify-between">
                                 <Badge className="mt-1 h-5 min-w-5 rounded-full px-1 font-mono tabular-nums" variant="outline">{pod.labels.length}+</Badge>
                             </p>
                         </div>
@@ -332,11 +332,6 @@ function Applications() {
                             <Application key={`${pod.name}-${currentPage}-${index}`} pod={pod} />
                         ))}
                     </div>
-                    {filteredPods.length > 9 && (
-                        <div className="text-center text-xs sm:text-sm text-gray-500 mt-4 sm:mt-6 p-3 sm:p-4 bg-gray-50 rounded-lg">
-                            Showing {((currentPage - 1) * 9) + 1}-{Math.min(currentPage * 9, filteredPods.length)} of {filteredPods.length} {(searchTerm || selectedNamespace !== 'all') ? 'filtered ' : ''}pods
-                        </div>
-                    )}
                 </>
             )}
         </div>

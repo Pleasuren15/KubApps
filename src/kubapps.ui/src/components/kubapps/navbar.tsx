@@ -58,7 +58,7 @@ function NavBar() {
     return (
         <>
             <div className="navbar">
-                <nav className="relative border-b border-gray-200 bg-white px-2 sm:px-4 lg:px-8 shadow-sm">
+                <nav className="relative bg-white px-2 sm:px-4 lg:px-8">
                     <div className="mx-auto max-w-7xl">
                         <div className="relative flex h-14 sm:h-16 items-center justify-between flex-wrap gap-2 sm:gap-0">
                             <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
