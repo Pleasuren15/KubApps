@@ -13,7 +13,7 @@ namespace kubapps.api
 
             var app = builder.Build();
             app.AddWebApplication();
-            
+
 
             app.MapGet("/getAllCluster", (IContextService contextService) =>
             {
@@ -29,6 +29,14 @@ namespace kubapps.api
                 return results;
             })
             .WithName("AllPods");
+
+            app.MapGet("/pods/{clusterName}/namespaces/{namespace}/pods/{podName}/logs",
+                handler: async (IPodService podService, string clusterName, string podName, string @namespace) =>
+            {
+                var results = await podService.GetPodLogsAsync(clusterName, podName, @namespace);
+                return results;
+            })
+            .WithName("GetPodLogs");
 
             app.Run();
         }

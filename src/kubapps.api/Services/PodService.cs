@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using System.Text;
 using k8s;
 using k8s.Models;
 using kubapps.api.Models;
@@ -93,6 +92,30 @@ namespace kubapps.api.Services
             finally
             {
                 _logger.LogInformation("{methodName} End", nameof(PortFowardPod));
+            }
+        }
+
+        public async Task<string> GetPodLogsAsync(string clusterName, string podName, string @namespace)
+        {
+            try
+            {
+                _logger.LogInformation("{methodName} Start", nameof(GetPodLogsAsync));
+                var kubeConfig = KubernetesClientConfiguration.LoadKubeConfig();
+                var config = KubernetesClientConfiguration.BuildConfigFromConfigObject(kubeConfig, clusterName);
+                var client = new Kubernetes(config);
+                var logStream = await client.CoreV1.ReadNamespacedPodLogAsync(podName, @namespace);
+                using var reader = new StreamReader(logStream);
+                var logs = await reader.ReadToEndAsync();
+                return logs;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("{methodName} Error: ErrorMessage {errorMax}", nameof(GetPodLogsAsync), ex.Message);
+                throw;
+            }
+            finally
+            {
+                _logger.LogInformation("{methodName} End", nameof(GetPodLogsAsync));
             }
         }
     }
